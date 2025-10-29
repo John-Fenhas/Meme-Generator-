@@ -4,37 +4,61 @@ export default function MainContent() {
 
   const [memeImagesData, setMemeImagesData] = React.useState([]);
   const [randomMeme, setRandomMeme] = React.useState(null);
+  const [topText, setTopText] = React.useState('')
+  const [centerText, setCenterText] =React.useState('')
+  const [bottomText, setBottomText] =React.useState('')
+  const [textColor, setTextColor] = React.useState("white");
+  const [textBorder, setTextBorder] = React.useState('black')
 
   React.useEffect(() => {
     fetch("https://api.memegen.link/templates/")
-      .then(response => response.json())
-      .then(data => {
-        const filteredData = data.filter(meme => meme.lines === 2);
-        setMemeImagesData(filteredData);
-      });
+    .then(res => res.json())
+    .then(data => {
+      const defaultPositionTemplates = data.filter(t => t.lines === 2);
+      console.log(defaultPositionTemplates);
+      setMemeImagesData(defaultPositionTemplates)
+    });
   }, []);
-
   React.useEffect(() => {
     if (memeImagesData.length > 0) {
       const randomIndex = Math.floor(Math.random() * memeImagesData.length);
       const random = memeImagesData[randomIndex];
       setRandomMeme(random);
-      console.log("Random meme:", random);
     }
   }, [memeImagesData]);
+
+  function toggleTextColor() {
+    setTextColor(prev => (prev === "white" ? "black" : "white"));
+    setTextBorder(prev => (prev === "white" ? "black" : "white"))
+  }
   
-  function generateNewImage(params) {
+//js 
+//
+  function resetInputs(params) {
+    setBottomText('')
+    setCenterText('')
+    setTopText('')
+    document.querySelectorAll(".txt-input").forEach(input => input.value = '')
+    
+  }
+
+  function generateNewImage() {
     if (memeImagesData.length > 0) {
       const randomIndex = Math.floor(Math.random() * memeImagesData.length);
       const random = memeImagesData[randomIndex];
       setRandomMeme(random);
-      console.log("Random meme:", random);
     }
   }
+  // 
+
+
+
+
+
+
 
   return (
   <main className="container main-grid" id="main" aria-labelledby="mainHeading">
-    <h2 id="mainHeading" className="visually-hidden">Meme generator interface</h2>
     
     <section id="controls" className="panel" aria-labelledby="controlsLabel">
       <h3 id="controlsLabel">Controls</h3>
@@ -44,71 +68,79 @@ export default function MainContent() {
 
         <div className="field">
           <label htmlFor="imageInput">Generate Image</label>
-          <button className="btn btn-primary" type="button">New Image</button>
+          <button onClick={generateNewImage} id="new-img-btn" className="btn" type="button">New Image</button>
         </div>
 
         <div className="field">
           <label htmlFor="topText">Top text</label>
-          <input id="topText" name="topText" type="text" maxLength="120" placeholder="When you open the assignment" aria-label="Top text" disabled></input>
+          <input className="txt-input" id="topText" name="topText" type="text" maxLength="120" placeholder="When you open the assignment" aria-label="Top text"
+          onChange={(event)=> setTopText(event.target.value)}
+          ></input>
+        </div>
+
+        <div className="field">
+          <label htmlFor="centerText">Center Text</label>
+          <input className="txt-input" id="centerText" name="centerText" type="text" maxLength="120" placeholder="And it's due at 12" aria-label="center Text"
+          onChange={(event)=> setCenterText(event.target.value)}
+          ></input>
         </div>
 
         <div className="field">
           <label htmlFor="bottomText">Bottom text</label>
-          <input id="bottomText" name="bottomText" type="text" maxLength="120" placeholder="And it's due tomorrow" aria-label="Bottom text" disabled></input>
+          <input className="txt-input" id="bottomText" name="bottomText" type="text" maxLength="120" placeholder="The time now is 11:45" aria-label="Bottom text"
+          onChange={(event)=> setBottomText(event.target.value)}
+          ></input>
         </div>
-        <div className="field">
-          <label htmlFor="leftText">LeftText</label>
-          <input id="leftText" name="leftText" type="text" maxLength="120" placeholder="And it's due tomorrow" aria-label="leftText" disabled></input>
-        </div>
-        <div className="field">
-          <label htmlFor="rightText">rightText</label>
-          <input id="rightText" name="rightText" type="text" maxLength="120" placeholder="And it's due tomorrow" aria-label="rightText" disabled></input>
-        </div>
+        
+        <button
+            type="button"
+            className="btn color-toggle-btn"
+            onClick={toggleTextColor}
+          >
+            Toggle Text Color
+        </button>
 
-        <div className="row">
-          <div className="field">
-            <label htmlFor="fontSize">Font size</label>
-            <input id="fontSize" name="fontSize" type="range" min="18" max="120" value="36" aria-valuemin="18" aria-valuemax="120" disabled></input>
-          </div>
-
-          <div className="field">
-            <label htmlFor="fontFamily">Font</label>
-            <select id="fontFamily" name="fontFamily" disabled>
-              <option>Impact</option>
-              <option>Open Sans</option>
-              <option>Inter</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="field">
-            <label htmlFor="textColor">Text color</label>
-            <input id="textColor" name="textColor" type="color" value="#ffffff" disabled></input>
-          </div>
-
-          <div className="field">
-            <label htmlFor="strokeWidth">Stroke</label>
-            <input id="strokeWidth" name="strokeWidth" type="range" min="0" max="10" value="2" disabled></input>
-          </div>
-        </div>
-
-        <div className="actions">
-          <button className="btn btn-primary" type="button" disabled aria-disabled="true">Apply (disabled)</button>
-          <button className="btn btn-ghost" type="reset">Reset</button>
-        </div>
       </form>
     </section> 
 
     <section id="preview" className="panel preview" aria-labelledby="previewLabel">
       <h3 id="previewLabel">Preview</h3>
 
-      <figure className="meme-wrap" role="img" aria-label="Meme preview placeholder">
+      <figure className="meme-wrap" role="img" aria-label="Meme preview">
+          
           {randomMeme ? (
-              <img src={randomMeme.blank} alt={randomMeme.name} />
+              <div className="relative-txt-cont">
+                <img src={randomMeme.blank} alt={randomMeme.name} />
+               
+                {topText.length>0? ( 
+                <p className="meme-txt top-txt"
+                style={{ color: textColor,
+                  WebkitTextStroke: `1px ${textBorder}`
+                 }}
+                >{topText}</p>) : (null)}
+
+                
+                {centerText.length>0? ( 
+                <p className="meme-txt center-txt"
+                style={{ color: textColor,
+                  WebkitTextStroke: `1px ${textBorder}`
+                 }}
+                >{centerText}</p> ) : (null)}
+                
+                
+                {bottomText.length>0? ( 
+                <p className="meme-txt bottom-txt"
+                style={{ color: textColor,
+                  WebkitTextStroke: `1px ${textBorder}`
+                 }}
+                >{bottomText}</p> ) : (null)}
+
+
+              </div>
             ) : (
               <p>Loading meme...</p>
           )}
+          
       </figure>
 
 
