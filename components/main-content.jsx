@@ -21,9 +21,31 @@ export default function MainContent() {
     .then(data => {
       const defaultPositionTemplates = data.filter(t => t.lines === 2);
       console.log(defaultPositionTemplates);
-      setMemeImagesData(defaultPositionTemplates)
-    });
+      setMemeImagesData(defaultPositionTemplates)})
+      
+    ;
   }, []);
+
+  React.useEffect(() => {
+  if (memeImagesData.length > 0) {
+    getNewMeme();
+  }
+}, [memeImagesData]);
+
+
+  function getNewMeme() {
+  const randomIndex = Math.floor(Math.random() * memeImagesData.length);
+  const random = memeImagesData[randomIndex];
+  setRandomMeme(random)
+
+  setText(prev => ({
+    ...prev,
+    topText: "",
+    centerText: "",
+    bottomText: ""
+  }));
+  }
+
   
 
   function updateText(name, value) {
@@ -49,11 +71,6 @@ export default function MainContent() {
     })
   }
 
-  function getNewMeme() {
-    const randomIndex = Math.floor(Math.random() * memeImagesData.length);
-    const random = memeImagesData[randomIndex];
-    setRandomMeme(random)
- }
 
 
 

@@ -1,8 +1,7 @@
 import React from "react"
 
 export default function TextSection(props) {
-
-  console.log(props)
+  console.log(props.text)
   return (
     <section id="controls" className="panel" aria-labelledby="controlsLabel">
       <h3 id="controlsLabel">Controls</h3>
@@ -16,9 +15,9 @@ export default function TextSection(props) {
             id="new-img-btn" 
             className="btn" 
             type="button"
-            onClick={props.toggleColor}
+            onClick={props.newMeme}
 
-          >New Image</button>
+          >New Meme</button>
 
 
           <label>Switch Text Color</label>
@@ -35,21 +34,45 @@ export default function TextSection(props) {
 
         <div className="field">
           <label htmlFor="topText">Top text</label>
-          <input className="txt-input" id="topText" name="topText" type="text" maxLength="120" placeholder="When you open the assignment" aria-label="Top text"
+          <input 
+          className="txt-input" 
+          id="topText" 
+          name="topText" 
+          type="text" 
+          maxLength="120" 
+          placeholder="When you open the assignment" 
+          aria-label="Top text"
+          value={props.text.topText}
           onChange={(event) => props.click(event.target.name, event.target.value)}
           ></input>
         </div>
 
         <div className="field">
           <label htmlFor="centerText">Center Text</label>
-          <input className="txt-input" id="centerText" name="centerText" type="text" maxLength="120" placeholder="And it's due at 12" aria-label="center Text"
+          <input 
+          className="txt-input" 
+          id="centerText" 
+          name="centerText" 
+          type="text" 
+          maxLength="120" 
+          placeholder="And it's due at 12" 
+          aria-label="center Text"
+          value={props.text.centerText}
           onChange={(event) => props.click(event.target.name, event.target.value)}
           ></input>
         </div>
 
         <div className="field">
           <label htmlFor="bottomText">Bottom text</label>
-          <input className="txt-input" id="bottomText" name="bottomText" type="text" maxLength="120" placeholder="The time now is 11:45" aria-label="Bottom text"
+          <input 
+          className="txt-input" 
+          id="bottomText" 
+          name="bottomText" 
+          type="text" 
+          maxLength="120" 
+          placeholder="The time now is 11:45" 
+          aria-label="Bottom text"
+          value={props.text.bottomText}
           onChange={(event) => props.click(event.target.name, event.target.value)}
           ></input>
         </div>
